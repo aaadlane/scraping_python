@@ -1,0 +1,45 @@
+version: "3"
+services: 
+  db:
+    image: mysql
+    environment: 
+            - host="scrap_sql",
+            - user="root",
+            - database="my_db_scrap",
+            - password="123",
+    networks:
+      - front-tier
+      - back-tier
+  flask:
+    build: ./flask
+    environment:
+      - FLASK_ENV=development
+      - FLASK_RUN_PORT=4000
+      - host="scrap_sql",
+      - user="root",
+      - database="my_db_scrap",
+      - password="123",
+    ports: 
+      - "3000:4000"
+    depends_on:
+      - "scrapper"
+    restart: always
+    command: python3 main.py
+    networks:
+      - back-tier
+  scrapper:
+    build: ./scrapper
+    environment:
+            - host="scrap_sql",
+            - user="root",
+            - database="my_db_scrap",
+            - password="123",
+    depends_on:
+      - "db"
+    command: python3 main.py
+    networks:
+      - front-tier
+
+networks:
+  front-tier: {}
+  back-tier: {}

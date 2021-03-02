@@ -8,12 +8,12 @@ def index():
 
 @app.route('/wiki')
 def articles():
-    # cursor = mydb.cursor()
-    # sql = "SELECT * FROM articles"
-    # cursor.execute(sql)
-    # results = cursor.fetchall()
-    # return render_template('base.html', results=results)
-    return 'article'
+    cursor = mydb.cursor()
+    sql = "SELECT * FROM articles"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    return render_template('article.html', results=results)
+    # return 'article'
 
 
 if __name__ == "__main__":

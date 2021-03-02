@@ -3,6 +3,8 @@
 from bs4 import BeautifulSoup
 import requests
 import mysql.connector
+import time
+
 
 
 url='https://wikileaks.org'
@@ -23,6 +25,8 @@ def insertInBdd(values):
     mycursor.execute(sql,val)
     mybdd.commit()
     return str(mycursor) + "nouvelle entree"
+
+
 # def recupTitre():
 #     listeTitle = []
 #     listeDate = []
@@ -79,6 +83,28 @@ def getArticle():
         article_content = article.p.text
 
         insertInBdd([article_title,article_img,article_content, article_date])
+
+item_storage = dict()
+
+while True:
+    print('scraping')
+    html = requests.get(url).text
+    soup = BeautifulSoup(html, 'html.parser')
+
+    for item in soup.select('li.product.in-stock'):
+        item_id = item.a['href']
+
+        if item_id not in item_storage:
+            item_storage[item_id] = item
+            print(f'NEW ITEM ADDED: {item_id}')
+
+    print('sleeping')
+    time.sleep(5)  # here you can adjust the frequency of checking for new items
+
+
+
+
+
 
 
         # article_titles.append(article_title)
